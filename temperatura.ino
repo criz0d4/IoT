@@ -2,34 +2,39 @@
 
 NXTIoT_dev  mysigfox;
 
-const int boton=6;
-const int sensorPin = A0;
+/*Variables Globales para utilizar
+el botón de la tarjeta*/
+  const int boton=6;
+  const int sensorPin = A0;
 
 void setup() 
 {
-  Serial.begin(9600);
-  pinMode(boton, INPUT);
+  Serial.begin(9600); //Comunicación serial con la tarjeta
+  pinMode(boton, INPUT); 
 }
 
 void leer_temperatura()
 {
-  int sensorVal=analogRead(sensorPin);
-  float voltaje=(sensorVal/1024.0)*5;
-  Serial.print("Voltaje: ");
-  Serial.println(voltaje); 
+  int sensorVal=analogRead(sensorPin); //Variable local que almacena el dato del sensor.
+  float voltaje=(sensorVal/1024.0)*5; //Variable local para definir el voltaje.
+  Serial.print("Voltaje: ");         //toda función 'Serial.print' imprime en monitor serie.
+  Serial.println(voltaje);          //Imprime la variable voltaje.
   Serial.print("Grados Cº: ");
-  float temp=((voltaje)*100);
-  Serial.println(temp);
+  float temp=((voltaje)*100);     //Calcula la temperatura a partir del voltaje.
+  Serial.println(temp);          //Imprime la variable temperatura.
+
+//Envía el mensaje a Sigfox:
   mysigfox.initpayload();
   mysigfox.addfloat(temp);
   mysigfox.sendmessage();
 }
 
+//Función 'principal'. Blucle infinito.
 void loop() 
 {
-  if (digitalRead(boton)==LOW)
+  if (digitalRead(boton)==LOW) //Espera a que se cumpla la condición (Botón presionado).
   {
-    leer_temperatura();
+    leer_temperatura();       //Accede a la función anterior
     delay(1000);
   } 
 }
